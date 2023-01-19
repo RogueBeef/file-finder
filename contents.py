@@ -1,6 +1,6 @@
 import os
 import tkinter as tk
-from tkinter import scrolledtext
+from tkinter import scrolledtext, Toplevel, Label, Button
 from io import open
 
 
@@ -16,11 +16,22 @@ def on_button_click():
     files_to_find = files_entered.splitlines()
     #print(files_to_find)
 
-    #search:    
-    file_names = search_folder(search_dir) # files in the search directory without extension
-    files_found = check_files(files_to_find, file_names)
-    #print(files_found)
-    create_report(report_dir, files_to_find, file_names, files_found)
+    #search:
+    try:
+        file_names = search_folder(search_dir) # files in the search directory without extension
+        files_found = check_files(files_to_find, file_names)
+        create_report(report_dir, files_to_find, file_names, files_found)
+    except FileNotFoundError:
+        popup = Toplevel(root)
+        popup.title("Error")
+        label = Label(popup, text="\nError - Check directory location\n")
+        label.pack()
+        # Add a close button to the pop-up window
+        close_button = Button(popup, text="Close", command=popup.destroy)
+        close_button.pack()
+        popup.mainloop()
+
+
 
 def search_folder(search_dir):
     files_list = os.listdir(search_dir)
